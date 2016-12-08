@@ -1,0 +1,52 @@
+{
+  "name": "bigpack",
+  "version": "0.1.0",
+  "description": " bundle up recursive dependencies of a NPM packge",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "coffee -o lib/ -c src/*",
+    "test": "mocha spec --recursive --require spec/helpers/chai.js --require coffee-script/register --compilers coffee:coffee-script/register",
+    "test-watch": "mocha --recursive -b -w spec --require spec/helpers/chai.js --require coffee-script/register --compilers coffee:coffee-script/register,litcoffee:coffee-script/register ",
+    "test-debug": "node-debug node_modules/mocha/bin/_mocha  --recursive spec --require spec/helpers/chai.js --require coffee-script/register --compilers coffee:coffee-script/register --no-timeouts --debug-brk",
+    "test-jenkins": "JUNIT_REPORT_PATH=report.xml JUNIT_REPORT_STACK=1 mocha spec --recursive --require spec/helpers/chai.js --require coffee-script/register --compilers coffee:coffee-script/register --timeout 15000 --reporter mocha-jenkins-reporter||true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ldegen/bigpack.git"
+  },
+  "keywords": [
+    "npm",
+    "utility",
+    "pack",
+    "package",
+    "utilities",
+    "archive",
+    "unpack",
+    "zip",
+    "unzip",
+    "unpack",
+    "unzip",
+    "offline",
+    "install",
+    "offline"
+  ],
+  "author": "Lukas Degener <lukas.degener@posteo.de>",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/ldegen/bigpack/issues"
+  },
+  "homepage": "https://github.com/ldegen/bigpack#readme",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.5.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "coffee-script": "^1.12.0",
+    "mocha": "^3.0.2",
+    "mocha-jenkins-reporter": "^0.2.4",
+    "node-inspector": "^0.12.8"
+  }
+}
