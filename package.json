@@ -1,8 +1,11 @@
 {
   "name": "bigpack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": " bundle up recursive dependencies of a NPM packge",
   "main": "lib/index.js",
+  "bin":{
+    "bigpack":"main.js"
+  },
   "scripts": {
     "prepublish": "coffee -o lib/ -c src/*",
     "test": "mocha spec --recursive --require spec/helpers/chai.js --require coffee-script/register --compilers coffee:coffee-script/register",
