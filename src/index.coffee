@@ -41,7 +41,7 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
         author: author
         license: license
         dependencies:
-          foo: srcDir
+          "#{name}": srcDir
         bundledDependencies: dependencies
 
   createBundle: (bundleDescriptor)->
