@@ -11,17 +11,22 @@ describe "The bigpack bundler", ->
   srcDir = undefined
   bundleDir = undefined
   tmpDir = undefined
+  npmListOutput = 
+    name: 'aggregator'
+    dependencies:
+      'coffee-script': {}
+      'csv-parse': {}
+      elasticsearch:
+        dependencies:
+          chalk:
+            dependencies:
+              'ansi-styles': {}
+              'escape-string-regexp': {}
   spawn = (cwd)->(executable, args...)->
     cmd = [executable,args...].join " "
     trace cwd, cmd
     if srcDir == cwd and cmd == "npm ls --parseable --prod"
-      Promise.resolve new Buffer """
-      #{srcDir}
-      #{srcDir}/node_modules/aggregator/node_modules/coffee-script
-      #{srcDir}/node_modules/aggregator/node_modules/csv-parse
-      #{srcDir}/node_modules/aggregator/node_modules/elasticsearch
-      #{srcDir}/node_modules/aggregator/node_modules/lodash
-      """
+      Promise.resolve new Buffer JSON.stringify npmListOutput
     else if cmd == "npm pack"
       writeFile path.join( cwd, "foo-bigpack-2.1.4.tgz"), new Buffer [0,8,21]
 
@@ -29,14 +34,14 @@ describe "The bigpack bundler", ->
       Promise.resolve ""
   history = undefined
   writeJson = (file, data)->
-    writeFile file, JSON.stringify data, null, "  " 
+    writeFile file, JSON.stringify data, null, "  "
   readJson = (file)->
     readFile file
       .then (data)->JSON.parse data
   trace = (args...) -> history.push args
   bundleDescriptor = undefined
   packageDescriptor =
-    name: "foo"
+    name: "aggregator"
     version: "2.1.4"
     description: "my foo is special"
     author: "bar"
@@ -52,24 +57,26 @@ describe "The bigpack bundler", ->
     srcDir = path.join tmpDir, "orig"
     bundleDir = path.join tmpDir, "bundle"
     bundleDescriptor =
-      name: "foo-bigpack"
+      name: "aggregator-bigpack"
       version: "2.1.4"
-      description: "A bundled version of foo and all its dependencies"
+      description: "A bundled version of aggregator and all its dependencies"
       author: "bar"
       license: "ISC"
       dependencies:
-        foo: srcDir
+        aggregator: srcDir
       bundledDependencies:[
-        "foo"
+        "aggregator"
         "coffee-script"
         "csv-parse"
         "elasticsearch"
-        "lodash"
+        "chalk"
+        'ansi-styles'
+        'escape-string-regexp'
       ]
-    pack = BigPack 
+    pack = BigPack
       spawn:spawn
       tmpDir: -> Promise.resolve bundleDir
-      
+
     mkdir bundleDir
       .then -> mkdir srcDir
       .then -> writeJson path.join(srcDir, "package.json"), packageDescriptor
@@ -106,7 +113,7 @@ describe "The bigpack bundler", ->
         ]
 
     it "will return the full path to the created tarball", ->
-      expect(pack.createBundle bundleDescriptor).to.eventually.eql path.join bundleDir, "foo-bigpack-2.1.4.tgz"
+      expect(pack.createBundle bundleDescriptor).to.eventually.eql path.join bundleDir, "aggregator-bigpack-2.1.4.tgz"
 
 
 

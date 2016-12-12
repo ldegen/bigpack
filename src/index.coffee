@@ -22,6 +22,14 @@ tmpDir0 = ->
   
 writeJson = (file, data)->
   writeFile file, JSON.stringify data, null, "  "
+
+
+searchTreeForDeps = (obj)->[obj.name,(searchDeps obj.dependencies)...]
+searchDeps = (deps = {})->
+  lists = for key,value of deps
+    [key,(searchDeps value.dependencies)...]
+  [].concat lists...
+
 module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
   tmpDirs = []
   createBundleDescriptor: (srcDir0)->
@@ -32,13 +40,8 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
         .then JSON.parse
       spawnInSrcDir "npm", "install"
         .then -> spawnInSrcDir "npm", "ls", "--parseable", "--prod"
-        .then (stdout)->stdout.toString().split '\n'
-        .then (rows)->rows
-          # See Issue #1: the srcDir will be part of the output and we
-          # must not assume that its name conincides with the artifact name
-          .filter (row) -> 
-            srcDir != path.resolve row
-          .map (row)-> row.replace /^.+\/([^\/]+)$/, (_,name)->name
+        .then JSON.parse
+        .then searchTreeForDeps 
     ]
       .then ([{name, version, author, license}, dependencies])->
         name: name+"-bigpack"
@@ -48,7 +51,7 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
         license: license
         dependencies:
           "#{name}": srcDir
-        bundledDependencies: [name, dependencies...]
+        bundledDependencies: dependencies
 
   createBundle: (bundleDescriptor)->
     tmpDir().then (dir)->
