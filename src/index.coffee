@@ -24,7 +24,8 @@ writeJson = (file, data)->
   writeFile file, JSON.stringify data, null, "  "
 module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
   tmpDirs = []
-  createBundleDescriptor: (srcDir)->
+  createBundleDescriptor: (srcDir0)->
+    srcDir = path.resolve srcDir0
     spawnInSrcDir = spawn(srcDir, process.env)
     Promise.all [
       readFile path.join srcDir, "package.json"
@@ -32,7 +33,12 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
       spawnInSrcDir "npm", "install"
         .then -> spawnInSrcDir "npm", "ls", "--parseable", "--prod"
         .then (stdout)->stdout.toString().split '\n'
-        .then (rows)->rows.map (row)->row.replace /^.+\/([^\/]+)$/, (_,name)->name
+        .then (rows)->rows
+          # See Issue #1: the srcDir will be part of the output and we
+          # must not assume that its name conincides with the artifact name
+          .filter (row) -> 
+            srcDir != path.resolve row
+          .map (row)-> row.replace /^.+\/([^\/]+)$/, (_,name)->name
     ]
       .then ([{name, version, author, license}, dependencies])->
         name: name+"-bigpack"
@@ -42,7 +48,7 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
         license: license
         dependencies:
           "#{name}": srcDir
-        bundledDependencies: dependencies
+        bundledDependencies: [name, dependencies...]
 
   createBundle: (bundleDescriptor)->
     tmpDir().then (dir)->

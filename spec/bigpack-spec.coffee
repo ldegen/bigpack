@@ -16,11 +16,11 @@ describe "The bigpack bundler", ->
     trace cwd, cmd
     if srcDir == cwd and cmd == "npm ls --parseable --prod"
       Promise.resolve new Buffer """
-      /tmp/sandbox/bundle/node_modules/aggregator
-      /tmp/sandbox/bundle/node_modules/aggregator/node_modules/coffee-script
-      /tmp/sandbox/bundle/node_modules/aggregator/node_modules/csv-parse
-      /tmp/sandbox/bundle/node_modules/aggregator/node_modules/elasticsearch
-      /tmp/sandbox/bundle/node_modules/aggregator/node_modules/lodash
+      #{srcDir}
+      #{srcDir}/node_modules/aggregator/node_modules/coffee-script
+      #{srcDir}/node_modules/aggregator/node_modules/csv-parse
+      #{srcDir}/node_modules/aggregator/node_modules/elasticsearch
+      #{srcDir}/node_modules/aggregator/node_modules/lodash
       """
     else if cmd == "npm pack"
       writeFile path.join( cwd, "foo-bigpack-2.1.4.tgz"), new Buffer [0,8,21]
@@ -60,7 +60,7 @@ describe "The bigpack bundler", ->
       dependencies:
         foo: srcDir
       bundledDependencies:[
-        "aggregator"
+        "foo"
         "coffee-script"
         "csv-parse"
         "elasticsearch"
