@@ -25,7 +25,7 @@ describe "The bigpack bundler", ->
   spawn = (cwd)->(executable, args...)->
     cmd = [executable,args...].join " "
     trace cwd, cmd
-    if srcDir == cwd and cmd == "npm ls --parseable --prod"
+    if srcDir == cwd and cmd == "npm ls --json --prod"
       Promise.resolve new Buffer JSON.stringify npmListOutput
     else if cmd == "npm pack"
       writeFile path.join( cwd, "foo-bigpack-2.1.4.tgz"), new Buffer [0,8,21]
@@ -88,7 +88,7 @@ describe "The bigpack bundler", ->
       expect(p).to.be.fulfilled.then ->
         expect(history).to.eql [
           [srcDir,"npm install"]
-          [srcDir,"npm ls --parseable --prod"]
+          [srcDir,"npm ls --json --prod"]
         ]
 
     it "creates a new package.json referencing the transitive

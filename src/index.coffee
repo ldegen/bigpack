@@ -39,7 +39,7 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
       readFile path.join srcDir, "package.json"
         .then JSON.parse
       spawnInSrcDir "npm", "install"
-        .then -> spawnInSrcDir "npm", "ls", "--parseable", "--prod"
+        .then -> spawnInSrcDir "npm", "ls", "--json", "--prod"
         .then JSON.parse
         .then searchTreeForDeps 
     ]
