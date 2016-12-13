@@ -11,7 +11,7 @@ describe "The bigpack bundler", ->
   srcDir = undefined
   bundleDir = undefined
   tmpDir = undefined
-  npmListOutput = 
+  npmListOutput =
     name: 'aggregator'
     dependencies:
       'coffee-script': {}
@@ -50,6 +50,25 @@ describe "The bigpack bundler", ->
     dependencies:
       oink: "^1.0.0"
       umf: "^2.0.0"
+
+  packageJsonWithBundledDeps =
+    name: "aggregator"
+    version: "2.1.4"
+    description: "my foo is special"
+    author: "bar"
+    license: "ISC"
+    bin: csv2json: "bin/fump.js"
+    dependencies:
+      oink: "^1.0.0"
+      umf: "^2.0.0"
+    bundledDependencies:[
+      "coffee-script"
+      "csv-parse"
+      "elasticsearch"
+      "chalk"
+      'ansi-styles'
+      'escape-string-regexp'
+    ]
 
   pack = undefined
   beforeEach ->
@@ -98,6 +117,10 @@ describe "The bigpack bundler", ->
       p = pack.createBundleDescriptor srcDir
       expect(p).to.eventually.eql bundleDescriptor
 
+    it "can create a modified version of the package.json file, that includes
+        a 'bundledDependencies'-Section", ->
+      p = pack.packageJsonWithBundledDependencies srcDir
+      expect(p).to.eventually.eql packageJsonWithBundledDeps
 
 
   describe "given a bundle descriptor", ->

@@ -1,5 +1,6 @@
 Promise = require "bluebird"
 cp = require "child_process"
+equal = require "deep-equal"
 execFile = Promise.promisify cp.execFile
 readFile = Promise.promisify require("fs").readFile
 writeFile = Promise.promisify require("fs").writeFile
@@ -32,6 +33,22 @@ searchDeps = (deps = {})->
 
 module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
   tmpDirs = []
+  packageJsonWithBundledDependencies: (srcDir0)->
+    srcDir = path.resolve srcDir0
+    spawnInSrcDir = spawn(srcDir, process.env)
+    Promise.all [
+      readFile path.join srcDir, "package.json"
+        .then JSON.parse
+      spawnInSrcDir "npm", "install"
+        .then -> spawnInSrcDir "npm", "ls", "--json", "--prod"
+        .then JSON.parse
+        .then searchTreeForDeps 
+    ]
+      .then ([packageJson, [_,dependencies...]])->
+        unless equal packageJson.bundledDependencies, dependencies
+          packageJson.bundledDependencies=dependencies
+          packageJson
+
   createBundleDescriptor: (srcDir0)->
     srcDir = path.resolve srcDir0
     spawnInSrcDir = spawn(srcDir, process.env)

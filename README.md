@@ -1,5 +1,29 @@
 # bigpack bundle up recursive dependencies of a NPM packge
 
+# Deprecation Warning
+
+Two things that make me think this project is actually a stupid idea.
+
+One reason is a misunderstanding that cost me several days: 
+There was a [regression](https://github.com/npm/npm/issues/13088) in NPM that completely confused me.
+In fact, `npm pack` *is actually supposed* to include the recursive dependenceis of all `bundledDependencies`.
+It just wasn't working correctly in the particular version I was using.
+
+The second reason is that I recently came to understand that my approach of creating an entirely new
+package instead of modifying the original one was a flawed one to begin with.
+My (valid, I think) motivation was to avoid conflicts with the original package.
+But creating a separate package (with a separate name) causes all sort of other difficulties (see Issues #2 and #3).
+
+Realizing that simply adding the *direct* dependencies to the list of
+`bundledDependencies` solves most if not all of my problems, I see not much point in
+going through all the trouble. I will instead try something arround the lines of 
+[bundled-dependencies](https://www.npmjs.com/package/bundled-dependencies)
+and let it update my `package.json` file on every build.
+The only thing I might be inclined to add is checking if updating the file is
+necessary at all.
+
+
+
 ## This tool solves a very particular use case:
 
 I have a production environment running some variant of MS Windows. Networking

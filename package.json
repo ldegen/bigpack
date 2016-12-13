@@ -3,8 +3,8 @@
   "version": "0.1.5",
   "description": " bundle up recursive dependencies of a NPM packge",
   "main": "lib/index.js",
-  "bin":{
-    "bigpack":"main.js"
+  "bin": {
+    "bigpack": "main.js"
   },
   "scripts": {
     "prepublish": "coffee -o lib/ -c src/*",
@@ -41,6 +41,7 @@
   "homepage": "https://github.com/ldegen/bigpack#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
+    "deep-equal": "^1.0.1",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.5.4"
   },
