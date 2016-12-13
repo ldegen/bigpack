@@ -43,15 +43,20 @@ module.exports = ({spawn=spawn0,tmpDir=tmpDir0}={}) ->
         .then JSON.parse
         .then searchTreeForDeps 
     ]
-      .then ([{name, version, author, license}, dependencies])->
+      .then ([{name, version, author, license, bin}, dependencies])->
+        rewrittenBin = {}
+        for key,value of bin
+          rewrittenBin[key] = "node_modules/#{name}/#{value}"
         name: name+"-bigpack"
         version: version
         description: "A bundled version of #{name} and all its dependencies"
         author: author
         license: license
+        bin: rewrittenBin
         dependencies:
           "#{name}": srcDir
         bundledDependencies: dependencies
+
 
   createBundle: (bundleDescriptor)->
     tmpDir().then (dir)->

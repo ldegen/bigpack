@@ -46,6 +46,7 @@ describe "The bigpack bundler", ->
     description: "my foo is special"
     author: "bar"
     license: "ISC"
+    bin: csv2json: "bin/fump.js"
     dependencies:
       oink: "^1.0.0"
       umf: "^2.0.0"
@@ -62,6 +63,7 @@ describe "The bigpack bundler", ->
       description: "A bundled version of aggregator and all its dependencies"
       author: "bar"
       license: "ISC"
+      bin: csv2json: "node_modules/aggregator/bin/fump.js"
       dependencies:
         aggregator: srcDir
       bundledDependencies:[
