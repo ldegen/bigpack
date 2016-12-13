@@ -1,6 +1,6 @@
 {
   "name": "bigpack",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": " bundle up recursive dependencies of a NPM packge",
   "main": "lib/index.js",
   "bin": {
